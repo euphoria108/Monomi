@@ -13,7 +13,13 @@ final class StatusItemController: NSObject {
 
         popover = NSPopover()
         popover.behavior = .transient
-        popover.contentViewController = NSHostingController(rootView: detail)
+        popover.contentViewController = NSHostingController(
+            rootView: VStack(spacing: 0) {
+                detail
+                Divider()
+                PopoverFooter()
+            }
+        )
 
         super.init()
 
@@ -45,4 +51,26 @@ final class StatusItemController: NSObject {
 /// クリックを下のステータスバーボタンへ素通しさせる NSHostingView
 private final class PassthroughHostingView<Content: View>: NSHostingView<Content> {
     override func hitTest(_ point: NSPoint) -> NSView? { nil }
+}
+
+/// 全ポップオーバー共通のフッター（設定・終了）
+private struct PopoverFooter: View {
+    var body: some View {
+        HStack {
+            SettingsLink {
+                Label("設定", systemImage: "gearshape")
+                    .font(.caption)
+            }
+            Spacer()
+            Button {
+                NSApp.terminate(nil)
+            } label: {
+                Label("終了", systemImage: "power")
+                    .font(.caption)
+            }
+        }
+        .buttonStyle(.borderless)
+        .padding(.horizontal, 14)
+        .padding(.vertical, 8)
+    }
 }

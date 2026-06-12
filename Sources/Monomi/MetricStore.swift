@@ -32,6 +32,17 @@ final class MetricStore {
         }
     }
 
+    /// 更新間隔を変更してスケジューラーを再起動する（カウンタ差分はリセットされる）
+    func setUpdateInterval(_ seconds: Double) {
+        let scheduler = scheduler
+        Task { @MetricsActor in
+            scheduler.start(
+                fastInterval: .seconds(seconds),
+                slowInterval: .seconds(max(seconds * 2, 5))
+            )
+        }
+    }
+
     private func apply(_ event: MetricEvent) {
         switch event {
         case .cpu(let snapshot):
