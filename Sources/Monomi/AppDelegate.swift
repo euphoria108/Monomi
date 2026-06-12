@@ -19,6 +19,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let manager = StatusItemManager(store: store)
         manager.show(items)
 
+        // センサーは SMC が読めた場合だけ表示する（最初のスナップショット到着で判定）
+        Task { @MainActor in
+            for _ in 0..<10 {
+                try? await Task.sleep(for: .seconds(2))
+                if store.sensors != nil {
+                    manager.show(items + [.sensors])
+                    break
+                }
+            }
+        }
+
         self.store = store
         statusItemManager = manager
     }

@@ -14,6 +14,7 @@ final class MetricStore {
     private(set) var networkHistory = RingBuffer<NetworkSnapshot>(capacity: 120)
     private(set) var disk: DiskSnapshot?
     private(set) var battery: BatterySnapshot?
+    private(set) var sensors: SensorSnapshot?
 
     private let scheduler = MetricScheduler()
     private var consumeTask: Task<Void, Never>?
@@ -48,6 +49,8 @@ final class MetricStore {
             disk = snapshot
         case .battery(let snapshot):
             battery = snapshot
+        case .sensors(let snapshot):
+            sensors = snapshot
         }
     }
 }

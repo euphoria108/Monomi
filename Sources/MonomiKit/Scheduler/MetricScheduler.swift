@@ -25,6 +25,8 @@ public final class MetricScheduler {
         let network = NetworkCollector()
         let disk = DiskCollector()
         let battery = BatteryCollector()
+        // SMC を開けない環境（Apple Silicon の一部キー欠如等）ではセンサー収集を無効化
+        let sensors = try? SensorCollector()
         let continuation = continuation
 
         pollers.append(Task { @MetricsActor in
@@ -51,6 +53,9 @@ public final class MetricScheduler {
                 continuation.yield(.disk(disk.sample()))
                 if let snapshot = battery.sample() {
                     continuation.yield(.battery(snapshot))
+                }
+                if let sensors {
+                    continuation.yield(.sensors(sensors.sample()))
                 }
                 try? await Task.sleep(for: slowInterval)
             }

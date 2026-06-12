@@ -6,4 +6,5 @@ public enum MetricEvent: Sendable {
     case network(NetworkSnapshot)
     case disk(DiskSnapshot)
     case battery(BatterySnapshot)
+    case sensors(SensorSnapshot)
 }
