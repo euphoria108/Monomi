@@ -10,6 +10,7 @@ final class StatusItemManager {
         case network
         case disk
         case battery
+        case sensors
     }
 
     private let store: MetricStore
@@ -66,6 +67,13 @@ final class StatusItemManager {
                 width: 56,
                 label: AnyView(BatteryLabelView(store: store)),
                 detail: AnyView(BatteryDetailView(store: store))
+            )
+        case .sensors:
+            StatusItemController(
+                autosaveName: "monomi.sensors",
+                width: 44,
+                label: AnyView(SensorLabelView(store: store)),
+                detail: AnyView(SensorDetailView(store: store))
             )
         }
     }
