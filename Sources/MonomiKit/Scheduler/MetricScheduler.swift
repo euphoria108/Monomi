@@ -22,6 +22,9 @@ public final class MetricScheduler {
         let cpu = CPUCollector()
         let memory = MemoryCollector()
         let process = ProcessCollector()
+        let network = NetworkCollector()
+        let disk = DiskCollector()
+        let battery = BatteryCollector()
         let continuation = continuation
 
         pollers.append(Task { @MetricsActor in
@@ -32,6 +35,9 @@ public final class MetricScheduler {
                 if let snapshot = try? memory.sample() {
                     continuation.yield(.memory(snapshot))
                 }
+                if let snapshot = try? network.sample() {
+                    continuation.yield(.network(snapshot))
+                }
                 try? await Task.sleep(for: fastInterval)
             }
         })
@@ -41,6 +47,10 @@ public final class MetricScheduler {
                 let samples = process.sample(limit: 5)
                 if !samples.isEmpty {
                     continuation.yield(.processes(samples))
+                }
+                continuation.yield(.disk(disk.sample()))
+                if let snapshot = battery.sample() {
+                    continuation.yield(.battery(snapshot))
                 }
                 try? await Task.sleep(for: slowInterval)
             }

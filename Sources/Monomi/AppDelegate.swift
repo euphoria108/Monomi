@@ -1,4 +1,5 @@
 import AppKit
+import MonomiKit
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var store: MetricStore?
@@ -11,8 +12,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let store = MetricStore()
         store.start()
 
+        var items: [StatusItemManager.Item] = [.cpu, .memory, .network, .disk]
+        if BatteryCollector.isBatteryPresent() {
+            items.append(.battery)
+        }
         let manager = StatusItemManager(store: store)
-        manager.show([.cpu, .memory])
+        manager.show(items)
 
         self.store = store
         statusItemManager = manager

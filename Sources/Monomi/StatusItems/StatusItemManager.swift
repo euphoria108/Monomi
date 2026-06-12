@@ -7,6 +7,9 @@ final class StatusItemManager {
     enum Item: String, CaseIterable {
         case cpu
         case memory
+        case network
+        case disk
+        case battery
     }
 
     private let store: MetricStore
@@ -42,6 +45,27 @@ final class StatusItemManager {
                 width: 44,
                 label: AnyView(MemoryLabelView(store: store)),
                 detail: AnyView(MemoryDetailView(store: store))
+            )
+        case .network:
+            StatusItemController(
+                autosaveName: "monomi.network",
+                width: 72,
+                label: AnyView(NetworkLabelView(store: store)),
+                detail: AnyView(NetworkDetailView(store: store))
+            )
+        case .disk:
+            StatusItemController(
+                autosaveName: "monomi.disk",
+                width: 72,
+                label: AnyView(DiskLabelView(store: store)),
+                detail: AnyView(DiskDetailView(store: store))
+            )
+        case .battery:
+            StatusItemController(
+                autosaveName: "monomi.battery",
+                width: 56,
+                label: AnyView(BatteryLabelView(store: store)),
+                detail: AnyView(BatteryDetailView(store: store))
             )
         }
     }

@@ -10,6 +10,10 @@ final class MetricStore {
     private(set) var memory: MemorySnapshot?
     private(set) var memoryHistory = RingBuffer<MemorySnapshot>(capacity: 120)
     private(set) var topProcesses: [ProcessSample] = []
+    private(set) var network: NetworkSnapshot?
+    private(set) var networkHistory = RingBuffer<NetworkSnapshot>(capacity: 120)
+    private(set) var disk: DiskSnapshot?
+    private(set) var battery: BatterySnapshot?
 
     private let scheduler = MetricScheduler()
     private var consumeTask: Task<Void, Never>?
@@ -37,6 +41,13 @@ final class MetricStore {
             memoryHistory.append(snapshot)
         case .processes(let samples):
             topProcesses = samples
+        case .network(let snapshot):
+            network = snapshot
+            networkHistory.append(snapshot)
+        case .disk(let snapshot):
+            disk = snapshot
+        case .battery(let snapshot):
+            battery = snapshot
         }
     }
 }
